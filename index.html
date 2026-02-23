@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Star Assessment — Gender Performance Analysis | Los Nietos USD</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif; background: #0f1419; color: #e8edf4; min-height: 100vh; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 24px 28px; }
+  .header { margin-bottom: 24px; }
+  .header-row { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+  .header-bar { width: 8px; height: 32px; border-radius: 4px; background: linear-gradient(180deg, #e8467c, #3b82f6); }
+  .header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+  .header-sub { font-size: 13px; color: #8899aa; margin: 4px 0 0 20px; }
+  .header-sub .f-dot { color: #e8467c; }
+  .header-sub .m-dot { color: #3b82f6; }
+  .tab-bar { display: flex; gap: 4px; margin-bottom: 20px; background: #1a2332; border-radius: 10px; padding: 4px; width: fit-content; }
+  .tab-btn { padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; transition: all .2s; font-family: inherit; display: flex; align-items: center; gap: 8px; }
+  .tab-btn.inactive { background: transparent; color: #8899aa; }
+  .tab-btn.reading-active { background: #10b981; color: #fff; }
+  .tab-btn.math-active { background: #f59e0b; color: #fff; }
+  .metric-bar { display: flex; gap: 6px; margin-bottom: 16px; }
+  .metric-btn { padding: 7px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .2s; font-family: inherit; }
+  .metric-btn.inactive { background: transparent; color: #8899aa; border: 1px solid #2a3a4e; }
+  .metric-btn.active-reading { background: #10b981; color: #fff; border: 1px solid #10b981; }
+  .metric-btn.active-math { background: #f59e0b; color: #fff; border: 1px solid #f59e0b; }
+  .insight-banner { border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
+  .insight-banner.reading { background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(16,185,129,0.03)); border: 1px solid rgba(16,185,129,0.25); }
+  .insight-banner.math { background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(245,158,11,0.03)); border: 1px solid rgba(245,158,11,0.25); }
+  .insight-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .insight-title.reading { color: #10b981; }
+  .insight-title.math { color: #f59e0b; }
+  .insight-body { font-size: 14px; line-height: 1.5; color: #e8edf4; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; margin-right: 6px; margin-bottom: 4px; margin-top: 10px; }
+  .badge-parity { background: #d1fae5; color: #065f46; border: 1px solid #34d399; }
+  .badge-neutral { background: #e0e7ff; color: #3730a3; border: 1px solid #818cf8; }
+  .badge-gap { background: #fef3c7; color: #92400e; border: 1px solid #fbbf24; }
+  .badge-alert { background: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+  .stat-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: #1a2332; border: 1px solid #2a3a4e; border-radius: 12px; padding: 16px 20px; flex: 1 1 180px; min-width: 170px; }
+  .stat-card.highlight-m { border-left: 3px solid #3b82f6; }
+  .stat-card.highlight-f { border-left: 3px solid #e8467c; }
+  .stat-card.highlight-none { border-left: 3px solid #2a3a4e; }
+  .stat-label { font-size: 11px; color: #8899aa; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; font-weight: 600; }
+  .stat-vals { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .stat-f { color: #e8467c; font-size: 22px; font-weight: 700; }
+  .stat-m { color: #3b82f6; font-size: 22px; font-weight: 700; }
+  .stat-suffix { color: #8899aa; font-size: 11px; margin-left: 4px; }
+  .stat-diff { font-size: 11px; margin-top: 6px; font-weight: 500; }
+  .stat-diff.m-lead { color: #3b82f6; }
+  .stat-diff.f-lead { color: #e8467c; }
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .chart-card { background: #1a2332; border: 1px solid #2a3a4e; border-radius: 12px; padding: 20px 16px 12px; }
+  .chart-card-full { grid-column: 1 / -1; }
+  .chart-title { font-size: 14px; font-weight: 700; color: #e8edf4; margin-bottom: 4px; }
+  .chart-note { font-size: 11px; color: #8899aa; margin-bottom: 10px; }
+  .chart-wrap { position: relative; height: 280px; }
+  .footer { text-align: center; font-size: 11px; color: #8899aa; margin-top: 24px; padding-bottom: 16px; }
+  @media (max-width: 800px) {
+    .chart-grid { grid-template-columns: 1fr; }
+    .stat-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-row">
+      <div class="header-bar"></div>
+      <h1>Star Assessment — Gender Performance Analysis</h1>
+    </div>
+    <p class="header-sub">
+      Los Nietos Union School District &middot; 2024-2025 &amp; 2025-2026 &middot;
+      <span class="f-dot">&#9679; Female</span> vs <span class="m-dot">&#9679; Male</span>
+    </p>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn reading-active" id="tab-reading" onclick="switchTab('reading')">&#128214; Star Reading</button>
+    <button class="tab-btn inactive" id="tab-math" onclick="switchTab('math')">&#128208; Star Math</button>
+  </div>
+  <div id="insight-banner"></div>
+  <div class="metric-bar">
+    <button class="metric-btn active-reading" id="mbtn-mean_pr" onclick="switchMetric('mean_pr')">Percentile Rank</button>
+    <button class="metric-btn inactive" id="mbtn-mean_ss" onclick="switchMetric('mean_ss')">Scaled Score</button>
+  </div>
+  <div class="stat-row" id="stat-row"></div>
+  <div class="chart-grid" id="chart-grid"></div>
+  <div class="footer">
+    Data: Star Reading &amp; Math Enterprise Tests &middot; Assessments with valid scores &middot; 4,651 Reading / 4,598 Math records
+  </div>
+</div>
+<script>
+const DATA={"reading":{"overall":[{"Sex":"F","mean_ss":988.4,"median_ss":1003.0,"mean_pr":43.8,"median_pr":42.0,"count":2377},{"Sex":"M","mean_ss":986.9,"median_ss":1003.0,"mean_pr":44.0,"median_pr":43.0,"count":2274}],"byYear":[{"School Year":"2024-2025","Sex":"F","mean_ss":983.3,"mean_pr":44.1,"count":1308},{"School Year":"2024-2025","Sex":"M","mean_ss":982.7,"mean_pr":45.0,"count":1233},{"School Year":"2025-2026","Sex":"F","mean_ss":994.5,"mean_pr":43.3,"count":1069},{"School Year":"2025-2026","Sex":"M","mean_ss":991.9,"mean_pr":42.8,"count":1041}],"byWindow":[{"Window":"Window 1","Sex":"F","mean_ss":975.9,"mean_pr":43.4,"count":752},{"Window":"Window 1","Sex":"M","mean_ss":976.5,"mean_pr":43.9,"count":722},{"Window":"Window 2","Sex":"F","mean_ss":988.7,"mean_pr":45.2,"count":749},{"Window":"Window 2","Sex":"M","mean_ss":989.1,"mean_pr":45.5,"count":703},{"Window":"Window 3","Sex":"F","mean_ss":999.8,"mean_pr":42.5,"count":534},{"Window":"Window 3","Sex":"M","mean_ss":994.6,"mean_pr":42.8,"count":521},{"Window":"Window 4","Sex":"F","mean_ss":997.2,"mean_pr":43.2,"count":342},{"Window":"Window 4","Sex":"M","mean_ss":993.1,"mean_pr":42.6,"count":328}],"byGrade":[{"Grade at Testing":2,"Sex":"F","mean_ss":873.0,"mean_pr":44.5,"count":262},{"Grade at Testing":2,"Sex":"M","mean_ss":883.4,"mean_pr":48.6,"count":271},{"Grade at Testing":3,"Sex":"F","mean_ss":917.7,"mean_pr":40.7,"count":383},{"Grade at Testing":3,"Sex":"M","mean_ss":916.2,"mean_pr":40.6,"count":343},{"Grade at Testing":4,"Sex":"F","mean_ss":973.5,"mean_pr":43.6,"count":361},{"Grade at Testing":4,"Sex":"M","mean_ss":965.0,"mean_pr":41.6,"count":346},{"Grade at Testing":5,"Sex":"F","mean_ss":999.2,"mean_pr":42.8,"count":348},{"Grade at Testing":5,"Sex":"M","mean_ss":1004.3,"mean_pr":44.2,"count":361},{"Grade at Testing":6,"Sex":"F","mean_ss":1022.1,"mean_pr":40.8,"count":400},{"Grade at Testing":6,"Sex":"M","mean_ss":1025.8,"mean_pr":43.1,"count":372},{"Grade at Testing":7,"Sex":"F","mean_ss":1054.3,"mean_pr":46.5,"count":432},{"Grade at Testing":7,"Sex":"M","mean_ss":1046.7,"mean_pr":45.0,"count":384},{"Grade at Testing":8,"Sex":"F","mean_ss":1076.9,"mean_pr":50.7,"count":191},{"Grade at Testing":8,"Sex":"M","mean_ss":1069.3,"mean_pr":46.7,"count":197}],"bySchool":[{"School Name":"Ada S. Nelson School","Sex":"F","mean_ss":941.9,"mean_pr":47.6,"count":413},{"School Name":"Ada S. Nelson School","Sex":"M","mean_ss":946.1,"mean_pr":48.3,"count":508},{"School Name":"Aeolian School","Sex":"F","mean_ss":917.7,"mean_pr":36.6,"count":357},{"School Name":"Aeolian School","Sex":"M","mean_ss":904.4,"mean_pr":31.4,"count":332},{"School Name":"Los Nietos Middle School","Sex":"F","mean_ss":1038.6,"mean_pr":44.8,"count":1235},{"School Name":"Los Nietos Middle School","Sex":"M","mean_ss":1037.5,"mean_pr":45.0,"count":1180},{"School Name":"Rancho Santa Gertrudes School","Sex":"F","mean_ss":941.0,"mean_pr":42.7,"count":372},{"School Name":"Rancho Santa Gertrudes School","Sex":"M","mean_ss":941.8,"mean_pr":46.9,"count":254}],"stateBenchmark":[{"level":"Level 1","Sex":"F","count":853,"pct":35.9},{"level":"Level 1","Sex":"M","count":821,"pct":36.1},{"level":"Level 2","Sex":"F","count":596,"pct":25.1},{"level":"Level 2","Sex":"M","count":564,"pct":24.8},{"level":"Level 3","Sex":"F","count":629,"pct":26.5},{"level":"Level 3","Sex":"M","count":587,"pct":25.8},{"level":"Level 4","Sex":"F","count":299,"pct":12.6},{"level":"Level 4","Sex":"M","count":302,"pct":13.3}],"districtBenchmark":[{"level":"At/Above Benchmark","Sex":"F","count":1265,"pct":53.2},{"level":"At/Above Benchmark","Sex":"M","count":1232,"pct":54.2},{"level":"On Watch","Sex":"F","count":404,"pct":17.0},{"level":"On Watch","Sex":"M","count":348,"pct":15.3},{"level":"Intervention","Sex":"F","count":387,"pct":16.3},{"level":"Intervention","Sex":"M","count":388,"pct":17.1},{"level":"Urgent Intervention","Sex":"F","count":321,"pct":13.5},{"level":"Urgent Intervention","Sex":"M","count":306,"pct":13.5}],"byYearWindow":[{"School Year":"2024-2025","Window":"Window 1","Sex":"F","mean_ss":971.4,"mean_pr":44.8,"count":335,"label":"24-25 W1"},{"School Year":"2024-2025","Window":"Window 1","Sex":"M","mean_ss":972.6,"mean_pr":45.5,"count":316,"label":"24-25 W1"},{"School Year":"2024-2025","Window":"Window 2","Sex":"F","mean_ss":984.0,"mean_pr":45.7,"count":337,"label":"24-25 W2"},{"School Year":"2024-2025","Window":"Window 2","Sex":"M","mean_ss":988.4,"mean_pr":47.8,"count":314,"label":"24-25 W2"},{"School Year":"2024-2025","Window":"Window 3","Sex":"F","mean_ss":980.0,"mean_pr":42.6,"count":294,"label":"24-25 W3"},{"School Year":"2024-2025","Window":"Window 3","Sex":"M","mean_ss":975.6,"mean_pr":43.9,"count":275,"label":"24-25 W3"},{"School Year":"2024-2025","Window":"Window 4","Sex":"F","mean_ss":997.2,"mean_pr":43.2,"count":342,"label":"24-25 W4"},{"School Year":"2024-2025","Window":"Window 4","Sex":"M","mean_ss":993.1,"mean_pr":42.6,"count":328,"label":"24-25 W4"},{"School Year":"2025-2026","Window":"Window 1","Sex":"F","mean_ss":979.5,"mean_pr":42.3,"count":417,"label":"25-26 W1"},{"School Year":"2025-2026","Window":"Window 1","Sex":"M","mean_ss":979.5,"mean_pr":42.7,"count":406,"label":"25-26 W1"},{"School Year":"2025-2026","Window":"Window 2","Sex":"F","mean_ss":992.5,"mean_pr":44.9,"count":412,"label":"25-26 W2"},{"School Year":"2025-2026","Window":"Window 2","Sex":"M","mean_ss":989.6,"mean_pr":43.6,"count":389,"label":"25-26 W2"},{"School Year":"2025-2026","Window":"Window 3","Sex":"F","mean_ss":1024.0,"mean_pr":42.4,"count":240,"label":"25-26 W3"},{"School Year":"2025-2026","Window":"Window 3","Sex":"M","mean_ss":1015.9,"mean_pr":41.6,"count":246,"label":"25-26 W3"}]},"math":{"overall":[{"Sex":"F","mean_ss":983.7,"median_ss":993.0,"mean_pr":41.8,"median_pr":40.0,"count":2356},{"Sex":"M","mean_ss":997.9,"median_ss":1006.0,"mean_pr":49.3,"median_pr":50.0,"count":2242}],"byYear":[{"School Year":"2024-2025","Sex":"F","mean_ss":979.3,"mean_pr":42.5,"count":1300},{"School Year":"2024-2025","Sex":"M","mean_ss":994.0,"mean_pr":50.6,"count":1225},{"School Year":"2025-2026","Sex":"F","mean_ss":989.0,"mean_pr":41.1,"count":1056},{"School Year":"2025-2026","Sex":"M","mean_ss":1002.7,"mean_pr":47.7,"count":1017}],"byWindow":[{"Window":"Window 1","Sex":"F","mean_ss":969.3,"mean_pr":41.7,"count":768},{"Window":"Window 1","Sex":"M","mean_ss":982.9,"mean_pr":48.4,"count":730},{"Window":"Window 2","Sex":"F","mean_ss":982.3,"mean_pr":43.9,"count":743},{"Window":"Window 2","Sex":"M","mean_ss":996.5,"mean_pr":51.0,"count":703},{"Window":"Window 3","Sex":"F","mean_ss":1001.2,"mean_pr":41.0,"count":511},{"Window":"Window 3","Sex":"M","mean_ss":1014.0,"mean_pr":48.7,"count":482},{"Window":"Window 4","Sex":"F","mean_ss":992.8,"mean_pr":39.0,"count":334},{"Window":"Window 4","Sex":"M","mean_ss":1010.9,"mean_pr":48.5,"count":327}],"byGrade":[{"Grade at Testing":2,"Sex":"F","mean_ss":858.0,"mean_pr":35.1,"count":296},{"Grade at Testing":2,"Sex":"M","mean_ss":878.5,"mean_pr":46.4,"count":306},{"Grade at Testing":3,"Sex":"F","mean_ss":913.8,"mean_pr":38.3,"count":369},{"Grade at Testing":3,"Sex":"M","mean_ss":930.0,"mean_pr":47.1,"count":336},{"Grade at Testing":4,"Sex":"F","mean_ss":968.9,"mean_pr":42.8,"count":349},{"Grade at Testing":4,"Sex":"M","mean_ss":974.3,"mean_pr":46.6,"count":310},{"Grade at Testing":5,"Sex":"F","mean_ss":1004.6,"mean_pr":44.1,"count":343},{"Grade at Testing":5,"Sex":"M","mean_ss":1016.9,"mean_pr":49.4,"count":358},{"Grade at Testing":6,"Sex":"F","mean_ss":1027.7,"mean_pr":42.7,"count":384},{"Grade at Testing":6,"Sex":"M","mean_ss":1044.5,"mean_pr":49.6,"count":356},{"Grade at Testing":7,"Sex":"F","mean_ss":1052.4,"mean_pr":45.5,"count":429},{"Grade at Testing":7,"Sex":"M","mean_ss":1070.3,"mean_pr":54.4,"count":380},{"Grade at Testing":8,"Sex":"F","mean_ss":1062.0,"mean_pr":43.3,"count":186},{"Grade at Testing":8,"Sex":"M","mean_ss":1078.9,"mean_pr":51.3,"count":196}],"bySchool":[{"School Name":"Ada S. Nelson School","Sex":"F","mean_ss":928.6,"mean_pr":43.7,"count":429},{"School Name":"Ada S. Nelson School","Sex":"M","mean_ss":941.0,"mean_pr":49.8,"count":499},{"School Name":"Aeolian School","Sex":"F","mean_ss":921.4,"mean_pr":36.1,"count":361},{"School Name":"Aeolian School","Sex":"M","mean_ss":924.9,"mean_pr":36.3,"count":350},{"School Name":"Los Nietos Middle School","Sex":"F","mean_ss":1038.7,"mean_pr":43.9,"count":1196},{"School Name":"Los Nietos Middle School","Sex":"M","mean_ss":1056.1,"mean_pr":52.2,"count":1150},{"School Name":"Rancho Santa Gertrudes School","Sex":"F","mean_ss":930.5,"mean_pr":38.6,"count":370},{"School Name":"Rancho Santa Gertrudes School","Sex":"M","mean_ss":944.5,"mean_pr":53.1,"count":243}],"stateBenchmark":[{"level":"Level 1","Sex":"F","count":1060,"pct":45.0},{"level":"Level 1","Sex":"M","count":800,"pct":35.7},{"level":"Level 2","Sex":"F","count":696,"pct":29.5},{"level":"Level 2","Sex":"M","count":614,"pct":27.4},{"level":"Level 3","Sex":"F","count":392,"pct":16.6},{"level":"Level 3","Sex":"M","count":446,"pct":19.9},{"level":"Level 4","Sex":"F","count":208,"pct":8.8},{"level":"Level 4","Sex":"M","count":382,"pct":17.0}],"districtBenchmark":[{"level":"At/Above Benchmark","Sex":"F","count":1193,"pct":50.6},{"level":"At/Above Benchmark","Sex":"M","count":1336,"pct":59.6},{"level":"On Watch","Sex":"F","count":402,"pct":17.1},{"level":"On Watch","Sex":"M","count":353,"pct":15.7},{"level":"Intervention","Sex":"F","count":440,"pct":18.7},{"level":"Intervention","Sex":"M","count":299,"pct":13.3},{"level":"Urgent Intervention","Sex":"F","count":321,"pct":13.6},{"level":"Urgent Intervention","Sex":"M","count":254,"pct":11.3}],"byYearWindow":[{"School Year":"2024-2025","Window":"Window 1","Sex":"F","mean_ss":966.6,"mean_pr":44.0,"count":343,"label":"24-25 W1"},{"School Year":"2024-2025","Window":"Window 1","Sex":"M","mean_ss":980.4,"mean_pr":51.2,"count":324,"label":"24-25 W1"},{"School Year":"2024-2025","Window":"Window 2","Sex":"F","mean_ss":978.2,"mean_pr":45.4,"count":342,"label":"24-25 W2"},{"School Year":"2024-2025","Window":"Window 2","Sex":"M","mean_ss":993.1,"mean_pr":53.3,"count":322,"label":"24-25 W2"},{"School Year":"2024-2025","Window":"Window 3","Sex":"F","mean_ss":980.2,"mean_pr":41.2,"count":281,"label":"24-25 W3"},{"School Year":"2024-2025","Window":"Window 3","Sex":"M","mean_ss":990.6,"mean_pr":49.1,"count":252,"label":"24-25 W3"},{"School Year":"2024-2025","Window":"Window 4","Sex":"F","mean_ss":992.8,"mean_pr":39.0,"count":334,"label":"24-25 W4"},{"School Year":"2024-2025","Window":"Window 4","Sex":"M","mean_ss":1010.9,"mean_pr":48.5,"count":327,"label":"24-25 W4"},{"School Year":"2025-2026","Window":"Window 1","Sex":"F","mean_ss":971.5,"mean_pr":39.8,"count":425,"label":"25-26 W1"},{"School Year":"2025-2026","Window":"Window 1","Sex":"M","mean_ss":985.0,"mean_pr":46.2,"count":406,"label":"25-26 W1"},{"School Year":"2025-2026","Window":"Window 2","Sex":"F","mean_ss":985.8,"mean_pr":42.6,"count":401,"label":"25-26 W2"},{"School Year":"2025-2026","Window":"Window 2","Sex":"M","mean_ss":999.3,"mean_pr":49.1,"count":381,"label":"25-26 W2"},{"School Year":"2025-2026","Window":"Window 3","Sex":"F","mean_ss":1026.9,"mean_pr":40.7,"count":230,"label":"25-26 W3"},{"School Year":"2025-2026","Window":"Window 3","Sex":"M","mean_ss":1039.7,"mean_pr":48.2,"count":230,"label":"25-26 W3"}]}};
+
+const FCOL="#e8467c",MCOL="#3b82f6";
+const SCHOOL_SHORT={"Ada S. Nelson School":"Ada S. Nelson","Aeolian School":"Aeolian","Los Nietos Middle School":"Los Nietos MS","Rancho Santa Gertrudes School":"Rancho Santa G."};
+let currentTab="reading",currentMetric="mean_pr",charts={};
+
+function pivot(arr,key,val){const labels=[],fV=[],mV=[],map={};arr.forEach(r=>{const k=r[key];if(!map[k]){map[k]={f:null,m:null};labels.push(k)}if(r.Sex==="F")map[k].f=r[val];else map[k].m=r[val]});labels.forEach(l=>{fV.push(map[l].f);mV.push(map[l].m)});return{labels,fVals:fV,mVals:mV}}
+function pivotBench(arr){return pivot(arr,"level","pct")}
+function pivotYW(arr,val){const labels=[...new Set(arr.map(r=>r.label))],fV=[],mV=[];labels.forEach(l=>{const rows=arr.filter(r=>r.label===l);fV.push(rows.find(r=>r.Sex==="F")?.[val]??null);mV.push(rows.find(r=>r.Sex==="M")?.[val]??null)});return{labels,fVals:fV,mVals:mV}}
+
+function ds(fV,mV,type){
+  if(type==="line")return[{label:"Female",data:fV,borderColor:FCOL,backgroundColor:FCOL,pointBackgroundColor:FCOL,pointRadius:5,pointHoverRadius:7,borderWidth:2.5,tension:.3,fill:false},{label:"Male",data:mV,borderColor:MCOL,backgroundColor:MCOL,pointBackgroundColor:MCOL,pointRadius:5,pointHoverRadius:7,borderWidth:2.5,tension:.3,fill:false}];
+  return[{label:"Female",data:fV,backgroundColor:FCOL,borderWidth:0,borderRadius:4,barPercentage:.75},{label:"Male",data:mV,backgroundColor:MCOL,borderWidth:0,borderRadius:4,barPercentage:.75}];
+}
+
+function opts(pctSuf,idxAxis){
+  return{responsive:true,maintainAspectRatio:false,indexAxis:idxAxis||"x",
+    plugins:{legend:{position:"top",labels:{color:"#8899aa",font:{family:"DM Sans",size:12},usePointStyle:true,pointStyle:"circle",padding:16}},
+    tooltip:{backgroundColor:"#1e293b",titleColor:"#e8edf4",bodyColor:"#e8edf4",borderColor:"#334155",borderWidth:1,padding:10,
+      callbacks:pctSuf?{label:function(ctx){return ctx.dataset.label+": "+ctx.parsed[idxAxis==="y"?"x":"y"]+"%"}}:{}}},
+    scales:{x:{grid:{color:"#1e293b"},ticks:{color:"#8899aa",font:{family:"DM Sans",size:11}}},
+      y:{grid:{color:"#1e293b"},ticks:{color:"#8899aa",font:{family:"DM Sans",size:11},callback:pctSuf&&idxAxis!=="y"?function(v){return v+"%"}:undefined},beginAtZero:true}}};
+}
+
+function renderInsight(){
+  const d=DATA[currentTab],fO=d.overall.find(r=>r.Sex==="F"),mO=d.overall.find(r=>r.Sex==="M");
+  const gap=Math.abs(mO.mean_pr-fO.mean_pr).toFixed(1),isR=currentTab==="reading",cls=isR?"reading":"math";
+  let body,badges;
+  if(isR){body='Gender performance is <strong>essentially equal</strong> in Reading. The gap is only <strong>'+gap+' percentile points</strong> \u2014 neither group has a meaningful advantage across years, windows, or grade levels. Females show a slight edge in upper grades (7th-8th).';badges='<span class="badge badge-parity">Gap: '+gap+' PR pts</span><span class="badge badge-parity">No significant gender disparity</span><span class="badge badge-neutral">F slight edge in Gr 7-8</span>'}
+  else{body='Males consistently outperform females in Math by <strong>'+gap+' percentile points</strong> on average. This gap persists across <strong>every window, grade level, and school year</strong>. The gap is widest in the earliest grades (11 pts in Grade 2) and at the middle school level (9 pts in Grade 7). <strong>Males are nearly twice as likely to reach Level 4</strong> (17% vs 8.8%).';badges='<span class="badge badge-gap">Gap: '+gap+' PR pts</span><span class="badge badge-alert">M 2x at Level 4 (17% vs 9%)</span><span class="badge badge-gap">Consistent across all windows</span><span class="badge badge-alert">Widest gap at Gr 2 &amp; Gr 7</span>'}
+  document.getElementById("insight-banner").innerHTML='<div class="insight-banner '+cls+'"><div class="insight-title '+cls+'">'+(isR?"STAR READING":"STAR MATH")+' \u2014 KEY FINDING</div><div class="insight-body">'+body+'</div><div>'+badges+'</div></div>';
+}
+
+function renderStats(){
+  const d=DATA[currentTab],fO=d.overall.find(r=>r.Sex==="F"),mO=d.overall.find(r=>r.Sex==="M");
+  function card(label,fv,mv,hl){const diff=parseFloat(mv)-parseFloat(fv),abs=Math.abs(diff).toFixed(1),cls=hl?(diff>.5?"highlight-m":diff<-.5?"highlight-f":"highlight-none"):"",diffH=Math.abs(diff)>.5?'<div class="stat-diff '+(diff>0?"m-lead":"f-lead")+'">'+(diff>0?"Male":"Female")+" +"+abs+"</div>":"";return'<div class="stat-card '+cls+'"><div class="stat-label">'+label+'</div><div class="stat-vals"><div><span class="stat-f">'+fv+'</span><span class="stat-suffix">F</span></div><div><span class="stat-m">'+mv+'</span><span class="stat-suffix">M</span></div></div>'+diffH+"</div>"}
+  document.getElementById("stat-row").innerHTML=card("Mean Scaled Score",fO.mean_ss,mO.mean_ss,true)+card("Median Scaled Score",fO.median_ss,mO.median_ss,false)+card("Mean Percentile",fO.mean_pr,mO.mean_pr,true)+card("Total Assessments",fO.count.toLocaleString(),mO.count.toLocaleString(),false);
+}
+
+function destroyCharts(){Object.values(charts).forEach(c=>c.destroy());charts={}}
+function mc(id){return'<div class="chart-wrap"><canvas id="'+id+'"></canvas></div>'}
+
+function renderCharts(){
+  destroyCharts();const d=DATA[currentTab],m=currentMetric,mL=m==="mean_pr"?"Mean Percentile Rank":"Mean Scaled Score";
+  const grid=document.getElementById("chart-grid");
+  grid.innerHTML='<div class="chart-card"><div class="chart-title">'+mL+' by Grade Level</div><div class="chart-note">Grades 2-8</div>'+mc("ch-grade")+'</div>'+'<div class="chart-card"><div class="chart-title">'+mL+' by Testing Window</div><div class="chart-note">Windows 1-4 across all years</div>'+mc("ch-window")+'</div>'+'<div class="chart-card"><div class="chart-title">'+mL+' Trend \u2014 Year \u00d7 Window</div><div class="chart-note">Chronological progression across all testing periods</div>'+mc("ch-trend")+'</div>'+'<div class="chart-card"><div class="chart-title">'+mL+' by School</div>'+mc("ch-school")+'</div>'+'<div class="chart-card"><div class="chart-title">'+mL+' by School Year</div>'+mc("ch-year")+'</div>'+'<div class="chart-card"><div class="chart-title">State Benchmark Distribution (%)</div><div class="chart-note">% of each gender at each performance level</div>'+mc("ch-state")+'</div>'+'<div class="chart-card chart-card-full"><div class="chart-title">District Benchmark Distribution (%)</div><div class="chart-note">% of each gender by district performance category</div>'+mc("ch-dist")+'</div>';
+
+  const gr=pivot(d.byGrade,"Grade at Testing",m);
+  charts.grade=new Chart(document.getElementById("ch-grade"),{type:"bar",data:{labels:gr.labels.map(v=>"Gr "+v),datasets:ds(gr.fVals,gr.mVals)},options:opts(false)});
+
+  const wi=pivot(d.byWindow,"Window",m);
+  charts.window=new Chart(document.getElementById("ch-window"),{type:"bar",data:{labels:wi.labels.map(v=>v.replace("Window ","W")),datasets:ds(wi.fVals,wi.mVals)},options:opts(false)});
+
+  const tr=pivotYW(d.byYearWindow,m);
+  charts.trend=new Chart(document.getElementById("ch-trend"),{type:"line",data:{labels:tr.labels,datasets:ds(tr.fVals,tr.mVals,"line")},options:opts(false)});
+
+  const sc=pivot(d.bySchool,"School Name",m);
+  charts.school=new Chart(document.getElementById("ch-school"),{type:"bar",data:{labels:sc.labels.map(n=>SCHOOL_SHORT[n]||n),datasets:ds(sc.fVals,sc.mVals)},options:opts(false,"y")});
+
+  const yr=pivot(d.byYear,"School Year",m);
+  charts.year=new Chart(document.getElementById("ch-year"),{type:"bar",data:{labels:yr.labels,datasets:ds(yr.fVals,yr.mVals)},options:opts(false)});
+
+  const sb=pivotBench(d.stateBenchmark);
+  charts.state=new Chart(document.getElementById("ch-state"),{type:"bar",data:{labels:sb.labels,datasets:ds(sb.fVals,sb.mVals)},options:opts(true)});
+
+  const db=pivotBench(d.districtBenchmark);
+  charts.dist=new Chart(document.getElementById("ch-dist"),{type:"bar",data:{labels:db.labels,datasets:ds(db.fVals,db.mVals)},options:opts(true)});
+}
+
+function switchTab(tab){
+  currentTab=tab;
+  document.getElementById("tab-reading").className=tab==="reading"?"tab-btn reading-active":"tab-btn inactive";
+  document.getElementById("tab-math").className=tab==="math"?"tab-btn math-active":"tab-btn inactive";
+  updateMB();renderAll();
+}
+function switchMetric(m){currentMetric=m;updateMB();renderAll()}
+function updateMB(){
+  const cls=currentTab==="reading"?"active-reading":"active-math";
+  document.getElementById("mbtn-mean_pr").className=currentMetric==="mean_pr"?"metric-btn "+cls:"metric-btn inactive";
+  document.getElementById("mbtn-mean_ss").className=currentMetric==="mean_ss"?"metric-btn "+cls:"metric-btn inactive";
+}
+function renderAll(){renderInsight();renderStats();renderCharts()}
+
+Chart.defaults.font.family="'DM Sans','Segoe UI',system-ui,sans-serif";
+Chart.defaults.color="#8899aa";
+renderAll();
+</script>
+</body>
+</html>
