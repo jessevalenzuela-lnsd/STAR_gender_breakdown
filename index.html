@@ -144,6 +144,78 @@ h4 { font-size:0.95rem; font-weight:600; margin-bottom:8px; color:var(--text2); 
 .gap-value { font-size:0.85rem; }
 .gap-direction { font-size:0.85rem; }
 
+/* Section description */
+.section-desc { 
+  background: var(--surface2); 
+  border-left: 3px solid var(--accent2); 
+  border-radius: 0 10px 10px 0;
+  padding: 12px 18px; 
+  margin-bottom: 24px; 
+  font-size: 0.9rem; 
+  color: var(--text2); 
+  line-height: 1.7;
+}
+.section-desc strong { color: var(--text); }
+
+/* Big insights */
+.insights-section { margin-bottom: 48px; }
+.insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width:900px){ .insights-grid { grid-template-columns: 1fr; } }
+.insight-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  transition: border-color 0.2s;
+}
+.insight-card:hover { border-color: var(--accent); }
+.insight-num {
+  font-family: 'Fraunces', serif;
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 48px;
+  background: linear-gradient(135deg, var(--male), var(--female));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.insight-body {}
+.insight-headline { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+.insight-detail { font-size: 0.87rem; color: var(--text2); line-height: 1.6; }
+
+/* Elem/Sec toggle tabs */
+.split-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.split-tab {
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: var(--surface2);
+  color: var(--text2);
+  transition: all 0.2s;
+}
+.split-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* Level badge */
+.level-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.level-elem { background: rgba(251,191,36,0.15); color: var(--yellow); }
+.level-sec { background: rgba(108,138,255,0.15); color: var(--accent); }
+
 /* Print friendly */
 @media print {
   body { background: #fff; color: #222; }
@@ -170,10 +242,77 @@ h4 { font-size:0.95rem; font-weight:600; margin-bottom:8px; color:var(--text2); 
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════ -->
-<!-- A) OVERVIEW -->
+<!-- KEY INSIGHTS (8 BIG STATEMENTS) -->
 <!-- ═══════════════════════════════════════════════════════════════════ -->
+<div class="insights-section">
+    <h2>8 Key Findings</h2>
+    <p class="section-desc">These eight statements capture the most important patterns across all measures for the 2024-26 school years. Each is drawn directly from the data and is meant to anchor the deeper charts that follow.</p>
+    <div class="insights-grid">
+        <div class="insight-card">
+            <div class="insight-num">1</div>
+            <div class="insight-body">
+                <div class="insight-headline">The reading gap is nearly gone — and boys closed it.</div>
+                <div class="insight-detail">Boys' average STAR Reading score rose +4.1 points year over year while girls' rose only +0.7 points. The mean gap collapsed from 4.7 points (girls leading) to just 1.3 points. At the median, the gap is now zero.</div>
+            </div>
+        </div>
+        <div class="insight-card">
+            <div class="insight-num">2</div>
+            <div class="insight-body">
+                <div class="insight-headline">Boys hold a persistent, 13-point math advantage on STAR — and it spans every grade.</div>
+                <div class="insight-detail">Boys outscored girls in STAR Math in every grade level both years, with the gap ranging from 4 to 28 points. The district-wide gap stayed at ~13 points across both years, indicating a stable and structural difference in assessed math skill.</div>
+            </div>
+        </div>
+        <div class="insight-card">
+            <div class="insight-num">3</div>
+            <div class="insight-body">
+                <div class="insight-headline">CAASPP tells a split story: girls lead in ELA proficiency, boys lead in Math by 7.5 points.</div>
+                <div class="insight-detail">Girls' ELA proficiency (38.7%) exceeds boys' (34.8%) across grades 4–8. But boys' Math proficiency (30.5%) outpaces girls' (23.0%) — a 7.5-point gap. The Math gap is largest in 5th grade (+10.9 pts) and 8th grade (+11.3 pts).</div>
+            </div>
+        </div>
+        <div class="insight-card">
+            <div class="insight-num">4</div>
+            <div class="insight-body">
+                <div class="insight-headline">Boys fail ELA at nearly twice the rate of girls in secondary school.</div>
+                <div class="insight-detail">Among grades 6–8, 20.7% of boys received an F in ELA compared to 13.4% of girls — a 7.3-point gap. Boys also earn fewer A/B grades (44.3% vs 53.0%). Girls consistently earn more high grades across all secondary ELA courses.</div>
+            </div>
+        </div>
+        <div class="insight-card">
+            <div class="insight-num">5</div>
+            <div class="insight-body">
+                <div class="insight-headline">The discipline gap is the largest single gap in this dataset — and it's concentrated in elementary.</div>
+                <div class="insight-detail">Boys averaged 1.1 discipline incidents vs 0.3 for girls (a 15.3-point gap in incident rate). Elementary boys averaged 1.6 incidents compared to 0.3 for elementary girls. The gap shrinks dramatically in secondary (0.5 vs 0.3), suggesting early-grade intervention may be the highest-leverage target.</div>
+            </div>
+        </div>
+        <div class="insight-card">
+            <div class="insight-num">6</div>
+            <div class="insight-body">
+                <div class="insight-headline">Attendance is nearly equal district-wide, but the chronic absenteeism pattern flips between levels.</div>
+                <div class="insight-detail">Elementary boys are more chronically absent (15.1% vs 11.3% for elementary girls), but in secondary the pattern reverses — secondary girls are slightly more chronically absent (17.2% vs 15.6% for boys). Secondary girls' attendance warrants closer monitoring.</div>
+            </div>
+        </div>
+        <div class="insight-card">
+            <div class="insight-num">7</div>
+            <div class="insight-body">
+                <div class="insight-headline">STAR and CAASPP scores align strongly — but attendance and discipline barely connect to academics.</div>
+                <div class="insight-detail">STAR Reading and CAASPP ELA show a strong positive correlation, as do STAR Math and CAASPP Math. However, neither attendance nor discipline incidents showed meaningful correlation with academic scores for either gender, suggesting these are somewhat independent risk factors.</div>
+            </div>
+        </div>
+        <div class="insight-card">
+            <div class="insight-num">8</div>
+            <div class="insight-body">
+                <div class="insight-headline">7th-grade girls show the steepest ELA advantage on CAASPP — but 6th-grade boys flip the script.</div>
+                <div class="insight-detail">7th-grade girls outpace 7th-grade boys in ELA proficiency by 14.9 percentage points (46.9% vs 32.0%) — the largest single-grade ELA gap. Yet in 6th grade, boys actually lead girls in ELA proficiency by 8 points (45.3% vs 37.3%), making 6th grade the only middle school grade where boys hold an ELA edge.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="section">
     <h2>Overview</h2>
+    <div class="section-desc">
+        This section gives a bird's-eye view of the district's 893 students across grades 2–8. It shows how students are distributed by grade and gender, and provides a quick summary of the most important findings from all six data domains (STAR, CAASPP, Grades, Attendance, Discipline, and Correlations). Use this as your orientation before diving into each section below.
+    </div>
 
     <div class="grid-6" style="margin-bottom:24px;">
         <div class="stat blue"><div class="number">893</div><div class="label">Total Students</div></div>
@@ -209,6 +348,9 @@ h4 { font-size:0.95rem; font-weight:600; margin-bottom:8px; color:var(--text2); 
 <!-- ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
     <h2>STAR Reading</h2>
+    <div class="section-desc">
+        STAR Reading was administered across <strong>6 testing windows</strong> over two school years. Scores here represent each student's average across all windows they participated in within a given year. The charts show district-wide averages and medians side by side, a window-by-window trend line, and a grade-level breakdown. <strong>Elementary girls have a slight edge</strong> in reading, while <strong>secondary boys narrowed the gap significantly</strong> in Year 2. The bottom card compares Elementary (Grades 2–5) vs. Secondary (Grades 6–8) performance directly.
+    </div>
 
     <div class="grid-2" style="margin-bottom:20px;">
         <div class="card">
@@ -317,6 +459,9 @@ h4 { font-size:0.95rem; font-weight:600; margin-bottom:8px; color:var(--text2); 
 <!-- ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
     <h2>STAR Math</h2>
+    <div class="section-desc">
+        STAR Math scores follow the same 6-window structure as Reading. The most notable pattern here is a <strong>consistent and stable boys' advantage</strong> — approximately 13 points at the district level — that is present in virtually every grade and both years. Unlike Reading, where the gap narrowed, the Math gap barely moved year over year. The Elementary vs. Secondary comparison shows the gap is somewhat larger in secondary (~14 pts) than elementary (~10 pts), suggesting the difference may compound as students progress through school.
+    </div>
 
     <div class="grid-2" style="margin-bottom:20px;">
         <div class="card">
@@ -492,6 +637,9 @@ h4 { font-size:0.95rem; font-weight:600; margin-bottom:8px; color:var(--text2); 
 <!-- ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
     <h2>State Testing (CAASPP 2024-25)</h2>
+    <div class="section-desc">
+        CAASPP (California Assessment of Student Performance and Progress) is the state's annual standardized test. Proficiency means the student "Met or Exceeded Standard" — the state's benchmark for grade-level mastery. <strong>Only grades 4–8 are tested</strong> (2nd and 3rd graders do not take CAASPP). Results here are from the 2024-25 school year only. A consistent pattern emerges: <strong>girls lead in ELA at most grade levels</strong>, while <strong>boys lead in Math at every grade level tested</strong>. The grade-level table and Elementary vs. Secondary breakdowns highlight where these gaps are widest.
+    </div>
 
     <div class="grid-4" style="margin-bottom:20px;">
         <div class="stat male"><div class="number">34.8%</div><div class="label">Boys ELA Proficiency</div></div>
@@ -499,6 +647,20 @@ h4 { font-size:0.95rem; font-weight:600; margin-bottom:8px; color:var(--text2); 
         <div class="stat male"><div class="number">30.5%</div><div class="label">Boys Math Proficiency</div></div>
         <div class="stat female"><div class="number">23.0%</div><div class="label">Girls Math Proficiency</div></div>
     </div>
+
+    <div class="grid-4" style="margin-bottom:20px;">
+        <div class="stat"><div class="number">13.3%</div><div class="label">Elementary Boys ELA Prof <span class="level-badge level-elem">Elem</span></div></div>
+        <div class="stat"><div class="number">22.6%</div><div class="label">Elementary Girls ELA Prof <span class="level-badge level-elem">Elem</span></div></div>
+        <div class="stat"><div class="number">21.8%</div><div class="label">Elementary Boys Math Prof <span class="level-badge level-elem">Elem</span></div></div>
+        <div class="stat"><div class="number">16.4%</div><div class="label">Elementary Girls Math Prof <span class="level-badge level-elem">Elem</span></div></div>
+    </div>
+    <div class="grid-4" style="margin-bottom:20px;">
+        <div class="stat male"><div class="number">44.0%</div><div class="label">Secondary Boys ELA Prof <span class="level-badge level-sec">Sec</span></div></div>
+        <div class="stat female"><div class="number">48.5%</div><div class="label">Secondary Girls ELA Prof <span class="level-badge level-sec">Sec</span></div></div>
+        <div class="stat male"><div class="number">35.0%</div><div class="label">Secondary Boys Math Prof <span class="level-badge level-sec">Sec</span></div></div>
+        <div class="stat female"><div class="number">27.0%</div><div class="label">Secondary Girls Math Prof <span class="level-badge level-sec">Sec</span></div></div>
+    </div>
+    <p class="note" style="margin-bottom:20px;">Elementary = Grades 4–5 only (Gr 2–3 not tested). Secondary = Grades 6–8. Elementary ELA gap favors girls by 9.3 pts; secondary ELA gap also favors girls but by 4.5 pts. Boys' Math advantage is larger in secondary (8 pts) than elementary (5.4 pts).</p>
 
     <div class="grid-2" style="margin-bottom:20px;">
         <div class="card">
@@ -566,6 +728,9 @@ h4 { font-size:0.95rem; font-weight:600; margin-bottom:8px; color:var(--text2); 
 <!-- ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
     <h2>Course Grades (Secondary, Q2)</h2>
+    <div class="section-desc">
+        Course grades are available only for secondary students (Grades 6–8, 409 students). These reflect Quarter 2 teacher-assigned grades in ELA and Math. <strong>"Pass"</strong> means any grade from A through D (including +/−) or a P. <strong>"Fail"</strong> means only an F. CR and NM grades are excluded from pass/fail calculations. A consistent pattern across all three secondary grades: <strong>girls earn more A and B grades in ELA</strong>, while <strong>boys carry a higher F rate in ELA</strong>. In Math, the pass rates are nearly equal, but girls earn more A/B grades while boys show a slightly higher failure risk. Use the grade-by-grade table to identify which grade level has the greatest room for intervention.
+    </div>
     <p class="muted" style="margin-bottom:16px;">Grades 6-8 only (409 students: 205 boys, 204 girls). Pass = A through D (including +/−) or P. Not pass = F. Grades CR and NM are excluded from pass/fail calculations.</p>
 
     <div class="grid-4" style="margin-bottom:20px;">
@@ -983,6 +1148,9 @@ h4 { font-size:0.95rem; font-weight:600; margin-bottom:8px; color:var(--text2); 
 <!-- ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
     <h2>Attendance & Discipline</h2>
+    <div class="section-desc">
+        Attendance and discipline data are captured as a single-year snapshot from Aeries SIS. <strong>Chronic absenteeism</strong> is defined as falling below 90% attendance. The attendance story is one of near-parity — boys and girls attend at nearly identical rates district-wide — but the underlying patterns differ by level. <strong>The discipline gap is the most dramatic in this dataset</strong>: boys received nearly 4× as many total incidents (487 vs 124). This gap is far larger in elementary, where 4th-grade boys averaged 3.0 incidents compared to 0.3 for 4th-grade girls. By secondary, the gap narrows substantially. The "By Grade Level" table on the right unpacks both metrics grade by grade.
+    </div>
 
     <div class="grid-6" style="margin-bottom:20px;">
         <div class="stat male"><div class="number">93.9%</div><div class="label">Boys Avg Attendance</div></div>
@@ -1114,7 +1282,10 @@ h4 { font-size:0.95rem; font-weight:600; margin-bottom:8px; color:var(--text2); 
 <!-- ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
     <h2>How Measures Connect</h2>
-    <p class="muted" style="margin-bottom:16px;">This section looks at whether different measures tend to go together. For example, do students with better attendance also tend to score higher on STAR? We describe the strength of each connection as <strong>strong</strong>, <strong>moderate</strong>, <strong>weak</strong>, or <strong>very weak / none</strong>. Where boys and girls show meaningfully different patterns, we call that out.</p>
+    <div class="section-desc">
+        This section examines whether different measures tend to rise and fall together across individual students — what statisticians call a correlation. A <strong>strong positive</strong> connection means students who score high on one measure also tend to score high on the other. <strong>Very weak / none</strong> means knowing one measure tells us almost nothing about the other. The most important finding here: STAR assessments and CAASPP results are strongly aligned (validating that STAR is a good predictor of state test performance), but attendance and discipline are essentially disconnected from academics — meaning academically struggling students are not the same as frequently absent or disciplined students, and vice versa.
+    </div>
+    <p class="muted" style="margin-bottom:16px;">Strength labels: <strong>Strong</strong> (r ≥ 0.5), <strong>Moderate</strong> (0.3–0.5), <strong>Weak</strong> (0.1–0.3), <strong>Very weak / none</strong> (&lt;0.1). Where boys and girls show meaningfully different patterns, we call that out.</p>
 
     <div class="card">
         <div class="corr-row">
@@ -1216,7 +1387,10 @@ h4 { font-size:0.95rem; font-weight:600; margin-bottom:8px; color:var(--text2); 
 <!-- ═══════════════════════════════════════════════════════════════════ -->
 <div class="section">
     <h2>Gender Gap Tracker</h2>
-    <p class="muted" style="margin-bottom:16px;">This shows the size of the gap between boys and girls for every metric. Gaps are ranked from largest to smallest. Where we have two years of data (STAR scores), we show whether the gap got bigger (widened) or smaller (narrowed).</p>
+    <div class="section-desc">
+        The Gap Tracker puts all metrics on a single ranked list so you can immediately see which differences are largest, which are smallest, and — where two years of data exist — whether gaps are growing or shrinking. <strong>Gaps where boys lead are shown in blue; gaps where girls lead are in pink.</strong> The bar length represents the relative size of the gap compared to the largest gap in the dataset (discipline incident rate). Use this section to prioritize which gaps most warrant district attention and whether year-over-year trends are moving in the right direction.
+    </div>
+    <p class="muted" style="margin-bottom:16px;">Gaps ranked largest to smallest. Bar length is proportional to the largest gap in the dataset. For STAR scores, Year-over-Year shows whether the gap narrowed or widened.</p>
 
     <div class="card">
         <div class="gap-row" style="border-bottom:2px solid var(--accent); padding-bottom:6px; margin-bottom:4px;">
